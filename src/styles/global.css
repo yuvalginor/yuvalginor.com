@@ -8,8 +8,8 @@
 @theme {
 	--color-bg-base: oklch(98.5% 0 0);
 	--color-text-primary: oklch(27% 0.01 235);
-	--color-link: oklch(60% 0.15 275);
-	--color-brand: #c678dd;
+	--color-link: #9c96f8;
+	--color-brand: #9c96f8;
 	--color-brand-emphasis: oklch(20% 0 0);
 	--color-text-muted: oklch(55% 0.12 280);
 	--color-accent-secondary: #e06c75;
@@ -29,8 +29,8 @@
 			color-scheme: dark;
 			--color-bg-base: #282c34;
 			--color-text-primary: #abb2bf;
-			--color-link: oklch(72% 0.14 285);
-			--color-brand: #c678dd;
+			--color-link: #9c96f8;
+			--color-brand: #9c96f8;
 			--color-brand-emphasis: oklch(95% 0 0);
 			--color-text-muted: oklch(75% 0.08 285);
 			--color-accent-secondary: #e06c75;
