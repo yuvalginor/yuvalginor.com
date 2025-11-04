@@ -1,103 +1,82 @@
 # Personal Website
 
-A clean, minimalist one-page personal website built with Astro and deployed on Netlify.
+My personal website built with Astro and Tailwind CSS, deployed on Netlify.
 
-## Getting Started
+## Development
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18 or higher
+- npm
 
-### Installation
+### Setup
 
-1. Install dependencies:
+Install dependencies:
+
 ```bash
 npm install
 ```
 
-2. Start the development server:
+Start the development server:
+
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:4321](http://localhost:4321) in your browser.
-
-## Customization
-
-### Update Your Information
-
-Edit `src/pages/index.astro` and update:
-
-- `name`: Your full name
-- `title`: Your title/tagline
-- `profileImage`: Path to your profile image (place it in `public/`)
-- `socialLinks`: Your social media profiles
-- Content sections: Update the paragraphs with your own information
-
-### Add Your Profile Picture
-
-1. Add your profile image to the `public/` folder (e.g., `public/profile.jpg`)
-2. Update the `profileImage` variable in `index.astro`
-
-### Styling
-
-The main styles are in `public/styles/global.css`. You can customize:
-
-- Colors: Update CSS variables in `:root`
-- Typography: Modify font families and sizes
-- Layout: Adjust spacing and max-width
+Visit `http://localhost:4321` to view the site.
 
 ## Building
 
-Build for production:
+Create a production build:
 
 ```bash
 npm run build
 ```
 
-The output will be in the `dist/` folder.
+The build output is generated in the `dist/` directory.
 
-## Deploying to Netlify
+Preview the production build locally:
 
-### Option 1: Git Integration (Recommended)
-
-1. Push your code to GitHub, GitLab, or Bitbucket
-2. Go to [Netlify](https://app.netlify.com)
-3. Click "Add new site" → "Import an existing project"
-4. Select your repository
-5. Build settings:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-6. Click "Deploy site"
-
-### Option 2: Manual Deploy
-
-1. Build the site: `npm run build`
-2. Drag and drop the `dist` folder to [Netlify Drop](https://app.netlify.com/drop)
-
-### Custom Domain
-
-After deploying, you can add a custom domain in your Netlify site settings under "Domain management".
-
-## Project Structure
-
+```bash
+npm run preview
 ```
-├── public/
-│   ├── styles/
-│   │   └── global.css      # Main stylesheet
-│   └── favicon.svg         # Site favicon
-├── src/
-│   └── pages/
-│       └── index.astro     # Main page
-├── astro.config.mjs        # Astro configuration
-├── netlify.toml            # Netlify configuration
-├── package.json
-└── README.md
-```
+
+## Deployment
+
+This site is configured for deployment on Netlify. The build configuration is specified in `netlify.toml`.
+
+### Automatic Deployment
+
+Connect your Git repository to Netlify for automatic deployments on every push to the main branch.
+
+### Manual Deployment
+
+Build the site locally and deploy the `dist/` directory through the Netlify dashboard.
+
+## Customization
+
+### Content
+
+Update personal information in `src/pages/index.astro`:
+- Name and tagline
+- Social media links
+- Bio sections
+
+### Styling
+
+The color palette and typography are defined in `src/styles/global.css`. The site uses Tailwind CSS for utility-first styling.
+
+### Theme
+
+The site includes a light/dark mode toggle that respects system preferences and persists user choice in localStorage.
+
+## Tech Stack
+
+- **Framework**: Astro 5
+- **Styling**: Tailwind CSS 4 (with Vite plugin)
+- **Typography**: Tailwind Typography plugin
+- **Deployment**: Netlify
 
 ## License
 
 MIT
-
-

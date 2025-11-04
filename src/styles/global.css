@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* Dark mode variant using data-mode attribute */
+@variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+/* Color palette based on Atom One Dark color scheme <3 */
+@theme {
+	--color-bg-base: oklch(98.5% 0 0);
+	--color-text-primary: oklch(27% 0.01 235);
+	--color-link: oklch(60% 0.15 275);
+	--color-brand: #c678dd;
+	--color-brand-emphasis: oklch(20% 0 0);
+	--color-text-muted: oklch(55% 0.12 280);
+	--color-accent-secondary: #e06c75;
+}
+
+@layer base {
+	html {
+		color-scheme: light dark;
+		accent-color: var(--color-brand);
+		scrollbar-gutter: stable;
+
+		&[data-mode="light"] {
+			color-scheme: light;
+		}
+
+		&[data-mode="dark"] {
+			color-scheme: dark;
+			--color-bg-base: #282c34;
+			--color-text-primary: #abb2bf;
+			--color-link: oklch(72% 0.14 285);
+			--color-brand: #c678dd;
+			--color-brand-emphasis: oklch(95% 0 0);
+			--color-text-muted: oklch(75% 0.08 285);
+			--color-accent-secondary: #e06c75;
+		}
+	}
+
+	:target {
+		scroll-margin-block: 5ex;
+	}
+
+	@view-transition {
+		navigation: auto;
+	}
+}
+
+@layer components {
+	.page-title {
+		@apply text-brand-emphasis text-2xl font-semibold;
+	}
+}
+
+@utility prose {
+	--tw-prose-body: var(--color-text-primary);
+	--tw-prose-bold: var(--color-text-primary);
+	--tw-prose-bullets: var(--color-text-primary);
+	--tw-prose-code: var(--color-text-primary);
+	--tw-prose-headings: var(--color-brand-emphasis);
+	--tw-prose-hr: 0.5px dashed #666;
+	--tw-prose-links: var(--color-text-primary);
+	--tw-prose-quotes: var(--color-text-muted);
+	--tw-prose-th-borders: #666;
+}
