@@ -1,19 +1,13 @@
 ---
 const name = "Yuval Ginor";
-const title = "Builder, Researcher, Learner";
-const profileImage = "/profile.jpg";
-const socialLinks = {
-  linkedin: "https://linkedin.com/in/yuvalginor",
-  github: "https://github.com/yuvalginor",
-  email: "mailto:yuvalginor@gmail.com",
-};
+const title = "What I'm doing now";
 ---
 
 <!doctype html>
 <html class="scroll-smooth" lang="en-GB">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Personal website" />
+    <meta name="description" content="What I'm doing now" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Favicons -->
@@ -24,7 +18,7 @@ const socialLinks = {
     <link rel="manifest" href="/site.webmanifest" />
     
     <meta name="generator" content={Astro.generator} />
-    <title>{name} - Personal website</title>
+    <title>{name} - Now</title>
     <link rel="stylesheet" href="/src/styles/global.css" />
     
     <script is:inline>
@@ -67,10 +61,10 @@ const socialLinks = {
   <body class="bg-bg-base text-text-primary mx-auto flex min-h-screen max-w-3xl flex-col px-4 pt-16 font-mono text-sm font-normal antialiased sm:px-8">
     <header class="group relative mb-10 flex items-center justify-end" id="site-header">
       <nav aria-label="Primary navigation" class="flex gap-6 relative" id="main-nav">
-        <a href="/" class="nav-link current-page transition-colors hover:text-[var(--color-brand)]">
+        <a href="/" class="nav-link transition-colors hover:text-[var(--color-brand)]">
           home
         </a>
-        <a href="/now" class="nav-link transition-colors hover:text-[var(--color-brand)]">
+        <a href="/now" class="nav-link current-page transition-colors hover:text-[var(--color-brand)]">
           now
         </a>
         <span class="nav-underline" aria-hidden="true"></span>
@@ -121,90 +115,43 @@ const socialLinks = {
     </theme-switch>
 
     <main id="main">
-      <section class="grid items-start gap-8 sm:grid-cols-[9rem_1fr]">
-        <img src={profileImage} alt={`${name} profile picture`} class="h-34 w-34 rounded-full object-cover sm:h-50 sm:w-56" />
-        <div>
-        <br>
-          <h1 class="page-title mb-2">{name}</h1>
-          <p class="mb-6 text-lg text-text-primary/70">{title}</p>
-          
-          <div class="flex flex-wrap items-end gap-x-2">
-            <ul class="flex items-center gap-x-2">
-              <li class="flex">
-                <a
-                  class="hover:text-link inline-block"
-                  href={socialLinks.linkedin}
-                  rel="noreferrer"
-                  target="_blank"
-                  aria-label="LinkedIn"
-                >
-                  <svg aria-hidden="true" class="h-6 w-6" focusable="false" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                  <span class="sr-only">LinkedIn</span>
-                </a>
-              </li>
-              <li class="flex">
-                <a
-                  class="hover:text-link inline-block"
-                  href={socialLinks.github}
-                  rel="noreferrer"
-                  target="_blank"
-                  aria-label="GitHub"
-                >
-                  <svg aria-hidden="true" class="h-6 w-6" focusable="false" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                  <span class="sr-only">GitHub</span>
-                </a>
-              </li>
-              <li class="flex">
-                <a
-                  class="hover:text-link inline-block"
-                  href={socialLinks.email}
-                  rel="noreferrer"
-                  aria-label="Email"
-                >
-                  <svg aria-hidden="true" class="h-6 w-6" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="20" height="16" x="2" y="4" rx="2"/>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                  </svg>
-                  <span class="sr-only">Email</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <div class="prose prose-neutral dark:prose-invert mt-12 max-w-none space-y-6">
+      <div class="prose prose-neutral dark:prose-invert max-w-none space-y-6">
+        <h1 class="text-brand-emphasis text-xl font-semibold mb-6">{title}</h1>
+        
         <section>
-          <p>
-            Hi! I'm Yuval. I'm an applied researcher and engineering leader who is passionate about building things that actually work for real people. I'm motivated by difficult and ambiguous problem spaces and by generating impact. These days I'm deep into AI—working with agentic frameworks, RAG pipelines, and evaluation techniques. I'm exploring what becomes possible when you combine good engineering with thoughtful product thinking and a real understanding of how humans interact with technology.
+          <p class="text-text-muted mb-4">
+            <em>This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="hover:text-link underline">/now page</a>, inspired by Derek Sivers. It's a living document of what I'm focused on right now.</em>
+          </p>
+          <p class="text-text-muted text-xs">
+            Last updated: November 2025
           </p>
         </section>
 
         <section>
+          <h2 class="text-brand-emphasis text-lg font-semibold mb-3">What I'm working on</h2>
           <p>
-            My background is in Computer Science and Psychology from Hebrew University, which shapes how I think about building things. I believe great technology should create measurable impact while keeping people at the center—systems need to work for both the machine and the humans using them.
+            [Content to be added - describe your current projects, work, and professional focus]
           </p>
         </section>
 
         <section>
+          <h2 class="text-brand-emphasis text-lg font-semibold mb-3">What I'm learning</h2>
           <p>
-            I spent five years at Mobileye where I founded and led an innovation team exploring new product opportunities. We built patent-pending technologies that shipped to Porsche, Ford, and VW—things like ParallaxNet, a neural network for 3D scene reconstruction that improved accuracy by 52% while running 2× faster, and a method for detecting tire slip with 1 mrad precision. These projects generated over $30M in new business value and taught me how to take ambiguous ideas and turn them into production systems at scale.
+            [Content to be added - describe what you're currently learning or exploring]
           </p>
         </section>
 
         <section>
+          <h2 class="text-brand-emphasis text-lg font-semibold mb-3">What I'm thinking about</h2>
           <p>
-            I've also worked on things outside the corporate world. During the October 2023 crisis, I led a team of engineers building tools for identifying missing persons under serious time pressure. I recently collaborated with a stealth startup in construction tech on an optimization problem that became core to their MVP. I'm someone who uses impact assessment to prioritize what I work on, and I've volunteered with organizations focused on high-leverage problem-solving.
+            [Content to be added - share ideas, questions, or themes you're contemplating]
           </p>
         </section>
 
         <section>
+          <h2 class="text-brand-emphasis text-lg font-semibold mb-3">Life updates</h2>
           <p>
-            If you're working on something at the intersection of AI, systems, and real-world impact, I'd love to connect and explore how we might collaborate.
+            [Content to be added - personal updates, location, lifestyle, etc.]
           </p>
         </section>
       </div>
@@ -294,3 +241,4 @@ const socialLinks = {
     </script>
   </body>
 </html>
+

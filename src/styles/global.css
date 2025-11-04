@@ -50,6 +50,23 @@
 	.page-title {
 		@apply text-brand-emphasis text-2xl font-semibold;
 	}
+
+	.nav-link {
+		color: var(--color-brand);
+		text-decoration: none;
+		position: relative;
+		padding-bottom: 2px;
+	}
+
+	.nav-underline {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 1px;
+		background-color: var(--color-brand);
+		transition: left 0.3s ease, width 0.3s ease;
+		pointer-events: none;
+	}
 }
 
 @utility prose {
