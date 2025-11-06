@@ -8,9 +8,9 @@
 @theme {
 	--color-bg-base: oklch(98.5% 0 0);
 	--color-text-primary: oklch(27% 0.01 235);
-	--color-link: oklch(0.7188 0.1405 285.08);
-	--color-link-hover: oklch(0.65 0.1405 285.08);
-	--color-brand: oklch(0.7188 0.1405 285.08);
+	--color-link: oklch(0.63 0.1405 285.08);
+	--color-link-hover: oklch(0.55 0.1405 285.08);
+	--color-brand: oklch(0.63 0.1405 285.08);
 	--color-brand-emphasis: oklch(20% 0 0);
 	--color-text-muted: oklch(55% 0.12 280);
 	--color-accent-secondary: #e06c75;
@@ -72,6 +72,11 @@
 		text-decoration: none;
 		position: relative;
 		padding-bottom: 2px;
+		background: none;
+		border: none;
+		font-family: inherit;
+		font-size: inherit;
+		cursor: pointer;
 	}
 
 	.nav-underline {
@@ -95,4 +100,409 @@
 	--tw-prose-links: var(--color-link);
 	--tw-prose-quotes: var(--color-text-muted);
 	--tw-prose-th-borders: #666;
+}
+
+/* Projects List - Minimal Styling */
+.projects-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2.5rem;
+	margin-top: 2rem;
+}
+
+.project-item {
+	position: relative;
+}
+
+.project-header-inline {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5rem;
+	margin-bottom: 0.25rem;
+}
+
+.project-emoji {
+	font-size: 1.25rem;
+	line-height: 1;
+}
+
+.project-title-inline {
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--color-text-primary);
+	margin: 0;
+	line-height: 1.4;
+}
+
+.project-context {
+	color: var(--color-text-muted);
+	font-size: 0.875rem;
+	margin: 0 0 0.75rem 0;
+	line-height: 1.4;
+}
+
+.project-context a {
+	color: var(--color-text-muted);
+	text-decoration: underline;
+	text-decoration-color: color-mix(in srgb, var(--color-text-muted) 40%, transparent);
+	text-underline-offset: 2px;
+	transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.project-context a:hover {
+	color: var(--color-brand);
+	text-decoration-color: var(--color-brand);
+}
+
+.project-years-inline {
+	color: var(--color-text-muted);
+	font-style: italic;
+}
+
+.project-summary {
+	margin: 0;
+	line-height: 1.6;
+}
+
+.project-summary > :first-child {
+	margin-top: 0;
+}
+
+.project-summary > :last-child {
+	margin-bottom: 0.75rem;
+}
+
+.project-summary h2 {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--color-brand);
+	margin: 1rem 0 0.5rem 0;
+}
+
+.project-summary p {
+	margin: 0 0 0.75rem 0;
+	line-height: 1.6;
+}
+
+.project-summary img {
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+	margin: 0.5rem 0.5rem 0.5rem 0;
+	vertical-align: middle;
+}
+
+.project-toggle {
+	background: none;
+	border: none;
+	padding: 0;
+	font-family: inherit;
+	font-size: 0.8125rem;
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: color 0.2s ease;
+	display: inline-block;
+}
+
+.project-toggle:hover {
+	color: var(--color-brand);
+}
+
+.project-toggle:focus {
+	outline: 1px dotted var(--color-brand);
+	outline-offset: 2px;
+}
+
+.toggle-text-less {
+	display: none;
+}
+
+.project-item.expanded .toggle-text-more {
+	display: none;
+}
+
+.project-item.expanded .toggle-text-less {
+	display: inline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+	.projects-list {
+		gap: 2rem;
+	}
+	
+	.project-emoji {
+		font-size: 1.125rem;
+	}
+	
+	.project-title-inline {
+		font-size: 0.9375rem;
+	}
+	
+	.project-context {
+		font-size: 0.8125rem;
+	}
+}
+
+/* Contact Modal Styles */
+contact-modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	pointer-events: none;
+}
+
+contact-modal.is-open {
+	display: block;
+	pointer-events: auto;
+}
+
+.contact-backdrop {
+	position: fixed;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(4px);
+	opacity: 0;
+	transition: opacity 200ms ease-out;
+}
+
+contact-modal.is-open .contact-backdrop {
+	opacity: 1;
+}
+
+.contact-modal {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	opacity: 0;
+	transform: scale(0.95);
+	transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+contact-modal.is-open .contact-modal {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.contact-modal-content {
+	position: relative;
+	background-color: var(--color-bg-base);
+	border: 1px solid color-mix(in srgb, var(--color-text-primary) 15%, transparent);
+	border-radius: 8px;
+	padding: 2rem;
+	width: 100%;
+	max-width: 500px;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.contact-close {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	background: none;
+	border: none;
+	padding: 0.25rem;
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: color 0.2s ease;
+	border-radius: 4px;
+}
+
+.contact-close:hover {
+	color: var(--color-text-primary);
+}
+
+.contact-close:focus {
+	outline: 2px solid var(--color-brand);
+	outline-offset: 2px;
+}
+
+.contact-title {
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--color-brand);
+	margin-bottom: 1.5rem;
+	font-family: inherit;
+}
+
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-label {
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+	font-family: inherit;
+}
+
+.form-input,
+.form-input-static {
+	font-family: inherit;
+	font-size: 0.875rem;
+	padding: 0.625rem 0.75rem;
+	background-color: var(--color-bg-base);
+	border: 1px solid color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+	border-radius: 4px;
+	color: var(--color-text-primary);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input-static {
+	background-color: color-mix(in srgb, var(--color-text-primary) 3%, transparent);
+	color: var(--color-text-muted);
+	cursor: not-allowed;
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: var(--color-brand);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 15%, transparent);
+}
+
+.form-input::placeholder {
+	color: var(--color-text-muted);
+	opacity: 0.6;
+}
+
+.form-textarea {
+	resize: vertical;
+	min-height: 120px;
+	line-height: 1.5;
+}
+
+.form-status {
+	font-size: 0.875rem;
+	padding: 0.75rem;
+	border-radius: 4px;
+	display: none;
+}
+
+.form-status:not(:empty) {
+	display: block;
+}
+
+.form-status-success {
+	background-color: color-mix(in srgb, var(--color-brand) 10%, transparent);
+	color: var(--color-brand);
+	border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
+}
+
+.form-status-error {
+	background-color: color-mix(in srgb, var(--color-accent-secondary) 10%, transparent);
+	color: var(--color-accent-secondary);
+	border: 1px solid color-mix(in srgb, var(--color-accent-secondary) 30%, transparent);
+}
+
+.form-actions {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 0.5rem;
+}
+
+.btn-send,
+.btn-cancel {
+	font-family: inherit;
+	font-size: 0.875rem;
+	padding: 0.625rem 1.25rem;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 1px solid;
+}
+
+.btn-send {
+	background-color: var(--color-brand);
+	color: white;
+	border-color: var(--color-brand);
+	position: relative;
+}
+
+.btn-send:hover:not(.is-loading) {
+	background-color: var(--color-link-hover);
+	border-color: var(--color-link-hover);
+}
+
+.btn-send:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 30%, transparent);
+}
+
+.btn-send .btn-loading {
+	display: none;
+}
+
+.btn-send.is-loading {
+	opacity: 0.7;
+	cursor: wait;
+}
+
+.btn-send.is-loading .btn-text {
+	display: none;
+}
+
+.btn-send.is-loading .btn-loading {
+	display: inline;
+}
+
+.btn-cancel {
+	background-color: transparent;
+	color: var(--color-text-muted);
+	border-color: color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+}
+
+.btn-cancel:hover {
+	color: var(--color-text-primary);
+	border-color: var(--color-text-primary);
+}
+
+.btn-cancel:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-text-primary) 15%, transparent);
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 640px) {
+	.contact-modal-content {
+		padding: 1.5rem;
+		max-width: 100%;
+	}
+
+	.contact-title {
+		font-size: 1.125rem;
+	}
+
+	.form-actions {
+		flex-direction: column;
+	}
+
+	.btn-send,
+	.btn-cancel {
+		width: 100%;
+	}
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+	.project-header {
+		font-size: 0.8125rem;
+	}
+
+	.project-emoji {
+		font-size: 1.125rem;
+	}
 }

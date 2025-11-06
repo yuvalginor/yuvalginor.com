@@ -1,0 +1,142 @@
+---
+import { getCollection } from 'astro:content';
+
+// Fetch and sort projects
+const allProjects = await getCollection('projects');
+const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+---
+
+<div class="projects-list">
+  {projects.map(async (project, index) => {
+    const { Content } = await project.render();
+    const hasMoreInfo = project.body.includes('## More info');
+    
+    return (
+      <div class="project-item" data-project-id={index} data-years={project.data.years}>
+        <div class="project-header-inline">
+          <span class="project-emoji">{project.data.emoji}</span>
+          <h3 class="project-title-inline">{project.data.title}</h3>
+        </div>
+        
+        <p class="project-context" set:html={project.data.context} />
+        
+        <div class="project-summary">
+          <Content />
+        </div>
+        
+        {hasMoreInfo && (
+          <button 
+            class="project-toggle" 
+            type="button"
+            aria-expanded="false"
+            aria-controls={`project-details-${index}`}
+          >
+            <span class="toggle-text-more">More info ↓</span>
+            <span class="toggle-text-less">Less info ↑</span>
+          </button>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+<script>
+  function initializeProjects() {
+    const projects = document.querySelectorAll('.project-item');
+    
+    projects.forEach((project) => {
+      const toggle = project.querySelector('.project-toggle');
+      if (!toggle) return;
+      
+      const summary = project.querySelector('.project-summary');
+      if (!summary) return;
+      
+      // Find the "More info" heading and everything after it
+      const headings = summary.querySelectorAll('h2');
+      let moreInfoHeading = null;
+      
+      headings.forEach(h => {
+        if (h.textContent?.trim() === 'More info') {
+          moreInfoHeading = h;
+        }
+      });
+      
+      if (!moreInfoHeading) return;
+      
+      // Find the last paragraph before "More info" heading (the summary)
+      let lastSummaryParagraph = moreInfoHeading.previousElementSibling;
+      while (lastSummaryParagraph && lastSummaryParagraph.tagName !== 'P') {
+        lastSummaryParagraph = lastSummaryParagraph.previousElementSibling;
+      }
+      
+      // Collect all elements after "More info" heading
+      const detailsElements: Element[] = [];
+      let currentElement = moreInfoHeading.nextElementSibling;
+      
+      while (currentElement) {
+        detailsElements.push(currentElement);
+        currentElement = currentElement.nextElementSibling;
+      }
+      
+      // Hide the "More info" heading initially
+      moreInfoHeading.style.display = 'none';
+      
+      // Move toggle button to be after the summary paragraph, before details
+      if (lastSummaryParagraph && toggle.parentNode) {
+        lastSummaryParagraph.insertAdjacentElement('afterend', toggle);
+      }
+      
+      // Get context element and years
+      const contextElement = project.querySelector('.project-context');
+      const years = project.getAttribute('data-years');
+      let yearsSpan: HTMLElement | null = null;
+      
+      // Create years span if years exist
+      if (years && contextElement) {
+        yearsSpan = document.createElement('span');
+        yearsSpan.className = 'project-years-inline';
+        yearsSpan.textContent = ` · ${years}`;
+        yearsSpan.style.display = 'none';
+        contextElement.appendChild(yearsSpan);
+      }
+      
+      // Hide details initially
+      detailsElements.forEach(el => {
+        (el as HTMLElement).style.display = 'none';
+      });
+      
+      // Toggle functionality
+      toggle.addEventListener('click', () => {
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        project.classList.toggle('expanded');
+        
+        if (!isExpanded) {
+          // Show years and details
+          if (yearsSpan) {
+            yearsSpan.style.display = 'inline';
+          }
+          detailsElements.forEach(el => {
+            (el as HTMLElement).style.display = '';
+          });
+        } else {
+          // Hide years and details
+          if (yearsSpan) {
+            yearsSpan.style.display = 'none';
+          }
+          detailsElements.forEach(el => {
+            (el as HTMLElement).style.display = 'none';
+          });
+        }
+      });
+    });
+  }
+
+  // Initialize on page load
+  initializeProjects();
+  
+  // Re-initialize after view transitions
+  document.addEventListener('astro:page-load', initializeProjects);
+</script>
+

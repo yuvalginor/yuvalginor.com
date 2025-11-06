@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import ContactModal from '../components/ContactModal.astro';
 
 interface Props {
   title: string;
@@ -98,6 +99,9 @@ const currentPath = Astro.url.pathname;
             {page.data.navLabel || page.slug}
           </a>
         ))}
+        <button id="contact-button" class="nav-link transition-colors hover:text-[var(--color-brand)]" type="button">
+          contact
+        </button>
         <span class="nav-underline" aria-hidden="true"></span>
       </nav>
     </header>
@@ -107,7 +111,7 @@ const currentPath = Astro.url.pathname;
         <span class="sr-only">Toggle color mode</span>
         <svg
           aria-hidden="true"
-          class="absolute inset-0 m-auto h-8 w-8 opacity-100 transition-opacity duration-200 dark:opacity-0"
+          class="absolute inset-0 m-auto h-8 w-8 opacity-0 transition-opacity duration-200 dark:opacity-100"
           fill="none"
           focusable="false"
           stroke="currentColor"
@@ -129,7 +133,7 @@ const currentPath = Astro.url.pathname;
         </svg>
         <svg
           aria-hidden="true"
-          class="absolute inset-0 m-auto h-8 w-8 opacity-0 transition-opacity duration-200 dark:opacity-100"
+          class="absolute inset-0 m-auto h-8 w-8 opacity-100 transition-opacity duration-200 dark:opacity-0"
           fill="none"
           focusable="false"
           stroke="currentColor"
@@ -207,6 +211,8 @@ const currentPath = Astro.url.pathname;
 
       <slot />
     </main>
+
+    <ContactModal />
 
     <script>
       function isDarkMode() {
@@ -289,6 +295,14 @@ const currentPath = Astro.url.pathname;
           setUnderlinePosition(currentPage);
         }
       });
+
+      // Contact button handler
+      const contactButton = document.getElementById("contact-button");
+      if (contactButton) {
+        contactButton.addEventListener("click", () => {
+          document.dispatchEvent(new CustomEvent("open-contact-modal"));
+        });
+      }
     </script>
   </body>
 </html>

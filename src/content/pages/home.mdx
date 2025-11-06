@@ -5,6 +5,7 @@ navOrder: 0
 hideFromNav: true
 ---
 import SocialLinks from '../../components/SocialLinks.astro';
+import LocationIndicator from '../../components/LocationIndicator.astro';
 
 <h1 class="text-[var(--color-brand)]">Hi, I'm Yuval Ginor.</h1>
 
@@ -16,7 +17,10 @@ These days I'm especially interested in where AI is heading. I'm experimenting w
 
 <text class="text-[var(--color-brand)]"> > </text> I'm on a career break right now, recalibrating priorities and seeking out my next chapter. I'm always curious to connect with like-minded people working on interesting problems.
 
-Want to know more? Head over to [/about](/about) for my story, [/now](/now) to see what I'm currently working on, or [/projects](/projects) for some things I've built.
+Want to know more? Head over to [/about](/about) for a longer story, [/now](/now) to see what I'm currently obsessed with, or [/projects](/projects) for some things I've built.
 
-<SocialLinks/>
+<div class="flex items-center justify-between mt-4">
+  <SocialLinks/>
+  <LocationIndicator/>
+</div>
 

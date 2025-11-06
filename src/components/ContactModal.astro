@@ -1,0 +1,240 @@
+---
+// ContactModal.astro - Minimalist contact form modal
+---
+
+<contact-modal>
+  <div class="contact-backdrop" aria-hidden="true"></div>
+  <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <div class="contact-modal-content">
+      <button class="contact-close" aria-label="Close contact form" type="button">
+        <svg
+          aria-hidden="true"
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <h2 id="contact-title" class="contact-title">send me an email</h2>
+      
+      <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
+        <input type="hidden" name="form-name" value="contact" />
+        
+        <!-- Honeypot field for spam protection -->
+        <p class="hidden">
+          <label>
+            Don't fill this out if you're human: <input name="bot-field" />
+          </label>
+        </p>
+
+        <div class="form-group">
+          <label for="contact-to" class="form-label">to:</label>
+          <div class="form-input-static">
+            Yuval Ginor &lt;yuvalginor@gmail.com&gt;
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="contact-email" class="form-label">from: (your email)</label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            class="form-input"
+            placeholder="you@example.com"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="contact-message" class="form-label">message</label>
+          <textarea
+            id="contact-message"
+            name="message"
+            required
+            rows="5"
+            class="form-input form-textarea"
+            placeholder="What's on your mind?"
+          ></textarea>
+        </div>
+
+        <div class="form-status" role="alert" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-send">
+            <span class="btn-text">send</span>
+            <span class="btn-loading" aria-hidden="true">sending...</span>
+          </button>
+          <button type="button" class="btn-cancel">close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</contact-modal>
+
+<script>
+  class ContactModal extends HTMLElement {
+    private backdrop: HTMLElement | null;
+    private modal: HTMLElement | null;
+    private closeBtn: HTMLElement | null;
+    private cancelBtn: HTMLElement | null;
+    private form: HTMLFormElement | null;
+    private formStatus: HTMLElement | null;
+    private isOpen: boolean = false;
+    private previouslyFocused: HTMLElement | null = null;
+
+    constructor() {
+      super();
+      
+      this.backdrop = this.querySelector<HTMLElement>('.contact-backdrop');
+      this.modal = this.querySelector<HTMLElement>('.contact-modal');
+      this.closeBtn = this.querySelector<HTMLElement>('.contact-close');
+      this.cancelBtn = this.querySelector<HTMLElement>('.btn-cancel');
+      this.form = this.querySelector<HTMLFormElement>('.contact-form');
+      this.formStatus = this.querySelector<HTMLElement>('.form-status');
+
+      this.bindEvents();
+    }
+
+    private bindEvents() {
+      // Listen for open event
+      document.addEventListener('open-contact-modal', () => this.open());
+      
+      // Close button
+      this.closeBtn?.addEventListener('click', () => this.close());
+      
+      // Cancel button
+      this.cancelBtn?.addEventListener('click', () => this.close());
+      
+      // Backdrop click
+      this.backdrop?.addEventListener('click', () => this.close());
+      
+      // ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isOpen) {
+          this.close();
+        }
+      });
+
+      // Form submission
+      this.form?.addEventListener('submit', (e) => this.handleSubmit(e));
+    }
+
+    private open() {
+      this.isOpen = true;
+      this.previouslyFocused = document.activeElement as HTMLElement;
+      
+      document.body.style.overflow = 'hidden';
+      this.classList.add('is-open');
+      
+      // Focus first input
+      setTimeout(() => {
+        const firstInput = this.querySelector<HTMLInputElement>('#contact-email');
+        firstInput?.focus();
+      }, 200);
+
+      // Setup focus trap
+      this.setupFocusTrap();
+    }
+
+    private close() {
+      this.isOpen = false;
+      document.body.style.overflow = '';
+      this.classList.remove('is-open');
+      
+      // Reset form
+      this.form?.reset();
+      this.clearStatus();
+      
+      // Return focus
+      this.previouslyFocused?.focus();
+    }
+
+    private setupFocusTrap() {
+      const focusableElements = this.modal?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      
+      if (!focusableElements || focusableElements.length === 0) return;
+      
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      const trapFocus = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab' || !this.isOpen) return;
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      };
+
+      document.addEventListener('keydown', trapFocus);
+    }
+
+    private async handleSubmit(e: Event) {
+      e.preventDefault();
+      
+      if (!this.form) return;
+
+      const submitBtn = this.form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      
+      // Show loading state
+      submitBtn?.classList.add('is-loading');
+      this.clearStatus();
+
+      try {
+        const formData = new FormData(this.form);
+        
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData as any).toString()
+        });
+
+        if (response.ok) {
+          this.showStatus('Message sent! I\'ll get back to you soon.', 'success');
+          setTimeout(() => this.close(), 2000);
+        } else {
+          this.showStatus('Something went wrong. Please try again.', 'error');
+        }
+      } catch (error) {
+        this.showStatus('Network error. Please check your connection.', 'error');
+      } finally {
+        submitBtn?.classList.remove('is-loading');
+      }
+    }
+
+    private showStatus(message: string, type: 'success' | 'error') {
+      if (!this.formStatus) return;
+      
+      this.formStatus.textContent = message;
+      this.formStatus.className = `form-status form-status-${type}`;
+    }
+
+    private clearStatus() {
+      if (!this.formStatus) return;
+      this.formStatus.textContent = '';
+      this.formStatus.className = 'form-status';
+    }
+  }
+
+  customElements.define('contact-modal', ContactModal);
+</script>
+

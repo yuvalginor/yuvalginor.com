@@ -14,6 +14,17 @@ const pages = defineCollection({
   }),
 });
 
+const projects = defineCollection({
+  type: 'content',
+  schema: z.object({
+    emoji: z.string(),
+    title: z.string(),
+    context: z.string(),
+    order: z.number(),
+    years: z.string().optional(),
+  }),
+});
+
 // Future: add posts collection
 // const posts = defineCollection({
 //   type: 'content',
@@ -28,6 +39,7 @@ const pages = defineCollection({
 
 export const collections = {
   pages,
+  projects,
   // posts,
 };
 
