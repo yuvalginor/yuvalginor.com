@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ContactModal from '../components/ContactModal.astro';
+import '../styles/global.css';
 
 interface Props {
   title: string;
@@ -46,7 +47,6 @@ const currentPath = Astro.url.pathname;
     
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <link rel="stylesheet" href="/src/styles/global.css" />
     
     <script is:inline>
       const systemPref = window.matchMedia("(prefers-color-scheme: light)");
