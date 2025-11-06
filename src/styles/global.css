@@ -8,8 +8,9 @@
 @theme {
 	--color-bg-base: oklch(98.5% 0 0);
 	--color-text-primary: oklch(27% 0.01 235);
-	--color-link: #9c96f8;
-	--color-brand: #9c96f8;
+	--color-link: oklch(0.7188 0.1405 285.08);
+	--color-link-hover: oklch(0.65 0.1405 285.08);
+	--color-brand: oklch(0.7188 0.1405 285.08);
 	--color-brand-emphasis: oklch(20% 0 0);
 	--color-text-muted: oklch(55% 0.12 280);
 	--color-accent-secondary: #e06c75;
@@ -29,8 +30,9 @@
 			color-scheme: dark;
 			--color-bg-base: #282c34;
 			--color-text-primary: #abb2bf;
-			--color-link: #9c96f8;
-			--color-brand: #9c96f8;
+			--color-link: oklch(0.7188 0.1405 285.08);
+			--color-link-hover: oklch(0.65 0.1405 285.08);
+			--color-brand: oklch(0.7188 0.1405 285.08);
 			--color-brand-emphasis: oklch(95% 0 0);
 			--color-text-muted: oklch(75% 0.08 285);
 			--color-accent-secondary: #e06c75;
@@ -43,6 +45,20 @@
 
 	@view-transition {
 		navigation: auto;
+	}
+
+	/* Force link colors in prose content only */
+	.prose a:not(.nav-link):not(.not-prose a) {
+		color: var(--color-link) !important;
+		text-decoration: underline !important;
+		text-decoration-color: var(--color-link) !important;
+		text-underline-offset: 2px !important;
+		transition: color 0.2s ease, text-decoration-color 0.2s ease !important;
+	}
+
+	.prose a:not(.nav-link):not(.not-prose a):hover {
+		color: var(--color-link-hover) !important;
+		text-decoration-color: var(--color-link-hover) !important;
 	}
 }
 
@@ -76,7 +92,7 @@
 	--tw-prose-code: var(--color-text-primary);
 	--tw-prose-headings: var(--color-brand-emphasis);
 	--tw-prose-hr: 0.5px dashed #666;
-	--tw-prose-links: var(--color-text-primary);
+	--tw-prose-links: var(--color-link);
 	--tw-prose-quotes: var(--color-text-muted);
 	--tw-prose-th-borders: #666;
 }

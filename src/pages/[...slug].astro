@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+    props: { entry: page },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'pages'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout 
+  title={`${entry.data.title} - Yuval Ginor`}
+  description={entry.data.description}
+>
+  <div class="prose prose-neutral dark:prose-invert mt-12 max-w-none">
+    <Content />
+  </div>
+</BaseLayout>
+
