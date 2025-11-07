@@ -12,7 +12,13 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
     const hasMoreInfo = project.body.includes('## More info');
     
     return (
-      <div class="project-item" data-project-id={index} data-years={project.data.years}>
+      <div
+        class="project-item"
+        id={project.slug}
+        data-project-id={index}
+        data-project-slug={project.slug}
+        data-years={project.data.years}
+      >
         <div class="project-header-inline">
           <span class="project-emoji">{project.data.emoji}</span>
           <h3 class="project-title-inline">{project.data.title}</h3>
@@ -45,10 +51,17 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
     const projects = document.querySelectorAll('.project-item');
     
     projects.forEach((project) => {
-      const toggle = project.querySelector('.project-toggle');
+      const projectElement = project as HTMLElement;
+
+      if (projectElement.dataset.initialized === 'true') {
+        return;
+      }
+      projectElement.dataset.initialized = 'true';
+
+      const toggle = projectElement.querySelector('.project-toggle');
       if (!toggle) return;
       
-      const summary = project.querySelector('.project-summary');
+      const summary = projectElement.querySelector('.project-summary');
       if (!summary) return;
       
       // Find the "More info" heading and everything after it
@@ -87,8 +100,8 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       }
       
       // Get context element and years
-      const contextElement = project.querySelector('.project-context');
-      const years = project.getAttribute('data-years');
+      const contextElement = projectElement.querySelector('.project-context');
+      const years = projectElement.getAttribute('data-years');
       let yearsSpan: HTMLElement | null = null;
       
       // Create years span if years exist
@@ -110,7 +123,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
         
         toggle.setAttribute('aria-expanded', String(!isExpanded));
-        project.classList.toggle('expanded');
+        projectElement.classList.toggle('expanded');
         
         if (!isExpanded) {
           // Show years and details
@@ -133,10 +146,29 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
     });
   }
 
+  function focusProjectFromHash() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    const target = document.getElementById(hash);
+    if (!target) return;
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const toggle = target.querySelector('.project-toggle');
+    if (toggle && toggle.getAttribute('aria-expanded') !== 'true') {
+      toggle.click();
+    }
+  }
+
   // Initialize on page load
   initializeProjects();
+  focusProjectFromHash();
   
   // Re-initialize after view transitions
-  document.addEventListener('astro:page-load', initializeProjects);
+  document.addEventListener('astro:page-load', () => {
+    initializeProjects();
+    focusProjectFromHash();
+  });
 </script>
 
