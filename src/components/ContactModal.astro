@@ -37,8 +37,19 @@
 
         <div class="form-group">
           <label for="contact-to" class="form-label">to:</label>
-          <div class="form-input-static">
+          <div class="form-input-static relative">
             Yuval Ginor &lt;yuvalginor@gmail.com&gt;
+            <button
+              type="button"
+              class="copy-email-btn absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:text-[var(--color-accent-secondary)] transition-colors"
+              aria-label="Copy email address"
+              data-email="yuvalginor@gmail.com"
+            >
+              <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -127,6 +138,10 @@
 
       // Form submission
       this.form?.addEventListener('submit', (e) => this.handleSubmit(e));
+      
+      // Copy email button
+      const copyBtn = this.querySelector<HTMLElement>('.copy-email-btn');
+      copyBtn?.addEventListener('click', (e) => this.copyEmail(e));
     }
 
     private open() {
@@ -232,6 +247,34 @@
       if (!this.formStatus) return;
       this.formStatus.textContent = '';
       this.formStatus.className = 'form-status';
+    }
+
+    private async copyEmail(e: Event) {
+      const button = e.currentTarget as HTMLElement;
+      const email = button.getAttribute('data-email');
+      
+      if (!email) return;
+
+      try {
+        await navigator.clipboard.writeText(email);
+        
+        // Visual feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = `
+          <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        `;
+        button.setAttribute('aria-label', 'Email copied!');
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.setAttribute('aria-label', 'Copy email address');
+        }, 2000);
+      } catch (error) {
+        console.error('Failed to copy email:', error);
+      }
     }
   }
 

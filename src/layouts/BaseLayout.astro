@@ -303,7 +303,22 @@ const currentPath = Astro.url.pathname;
           document.dispatchEvent(new CustomEvent("open-contact-modal"));
         });
       }
+
+      // Email icon button handler
+      const emailButton = document.getElementById("email-contact-button");
+      if (emailButton) {
+        emailButton.addEventListener("click", () => {
+          document.dispatchEvent(new CustomEvent("open-contact-modal"));
+        });
+      }
     </script>
+    <!-- Hidden form for Netlify Forms detection -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
   </body>
 </html>
 
