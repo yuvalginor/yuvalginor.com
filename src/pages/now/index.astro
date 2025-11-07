@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Helper to parse date from DD-MM-YYYY filename
+function parseDateFromSlug(slug: string): Date {
+  const parts = slug.split('-').map(Number);
+  const day = parts[0] ?? 1;
+  const month = parts[1] ?? 1;
+  const year = parts[2] ?? 2025;
+  return new Date(year, month - 1, day);
+}
+
+// Get all now entries and sort by date (newest first)
+const nowEntries = await getCollection('now', ({ data }) => {
+  return data.draft !== true;
+});
+
+// Sort by date descending (parse from slug/filename)
+const sortedEntries = nowEntries.sort((a, b) => {
+  const dateA = parseDateFromSlug(a.slug);
+  const dateB = parseDateFromSlug(b.slug);
+  return dateB.getTime() - dateA.getTime();
+});
+
+// Get the latest entry
+const latestEntry = sortedEntries[0];
+
+if (!latestEntry) {
+  throw new Error('No now entries found');
+}
+
+const { Content } = await latestEntry.render();
+
+// Format the date from slug
+const entryDate = parseDateFromSlug(latestEntry.slug);
+const formattedDate = entryDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout 
+  title="Now - Yuval Ginor"
+  description="What I'm focused on at the moment, or what I've been doing recently."
+>
+  <div class="prose prose-neutral dark:prose-invert mt-12 max-w-none">
+    <h2>What I'm doing now</h2>
+    
+    <details class="inline">
+      <summary class="text-[var(--color-brand)]"> What is this? </summary>
+      <span>This is a <a href="https://nownownow.com/about">now page</a>. It's a living document of what I'm focused on at the moment, or what I've been doing recently. </span>
+      <br /><br />
+    </details>
+    <p class="text-[var(--color-brand)]/70 mt-0"><em>Last updated: {formattedDate}</em></p>
+    
+    <Content />
+  </div>
+</BaseLayout>
+

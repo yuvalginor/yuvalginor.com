@@ -25,6 +25,14 @@ const projects = defineCollection({
   }),
 });
 
+const now = defineCollection({
+  type: 'content',
+  schema: z.object({
+    // All fields optional - will be inferred from filename/context
+    draft: z.boolean().optional().default(false),
+  }),
+});
+
 // Future: add posts collection
 // const posts = defineCollection({
 //   type: 'content',
@@ -40,6 +48,7 @@ const projects = defineCollection({
 export const collections = {
   pages,
   projects,
+  now,
   // posts,
 };
 

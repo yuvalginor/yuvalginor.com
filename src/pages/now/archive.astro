@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Helper to parse date from DD-MM-YYYY filename
+function parseDateFromSlug(slug: string): Date {
+  const parts = slug.split('-').map(Number);
+  const day = parts[0] ?? 1;
+  const month = parts[1] ?? 1;
+  const year = parts[2] ?? 2025;
+  return new Date(year, month - 1, day);
+}
+
+// Get all now entries and sort by date (newest first)
+const nowEntries = await getCollection('now', ({ data }: { data: any }) => {
+  return data.draft !== true;
+});
+
+// Sort by date descending (parse from slug/filename)
+const sortedEntries = nowEntries.sort((a: CollectionEntry<'now'>, b: CollectionEntry<'now'>) => {
+  const dateA = parseDateFromSlug(a.slug);
+  const dateB = parseDateFromSlug(b.slug);
+  return dateB.getTime() - dateA.getTime();
+});
+
+// Helper function to get excerpt from content
+function getExcerpt(content: string, maxLength: number = 150): string {
+  const text = content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim();
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength).trim() + '...';
+}
+
+// Prepare entries with formatted data
+type EntryWithData = {
+  entry: CollectionEntry<'now'>;
+  formattedDate: string;
+  excerpt: string;
+};
+
+const entriesWithData: EntryWithData[] = sortedEntries.map((entry: CollectionEntry<'now'>) => {
+  const entryDate = parseDateFromSlug(entry.slug);
+  const formattedDate = entryDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const excerpt = getExcerpt(entry.body);
+  return { entry, formattedDate, excerpt };
+});
+---
+
+<BaseLayout 
+  title="Now Archive - Yuval Ginor"
+  description="Historical snapshots of what I've been doing"
+>
+  <div class="mt-12 max-w-none">
+    <h1 class="text-3xl font-bold mb-8">/now archive</h1>
+    
+    <div class="space-y-8">
+      {entriesWithData.map(({ entry, formattedDate, excerpt }) => (
+        <article class="border-l-2 border-[var(--color-brand)] pl-4 py-2">
+          <div class="flex items-baseline gap-3 mb-2">
+            <time class="text-[var(--color-brand)] font-medium">
+              {formattedDate}
+            </time>
+            <a 
+              href={`/now/${entry.slug}`}
+              class="text-sm hover:text-[var(--color-brand)] transition-colors"
+            >
+              View full entry →
+            </a>
+          </div>
+          <p class="text-neutral-600 dark:text-neutral-400">
+            {excerpt}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+

@@ -29,10 +29,13 @@ const navPages = allPages
 
 // Determine current page for navigation highlighting
 const currentPath = Astro.url.pathname;
+
+// Check if we're on the /now page or any subpage
+const isNowPage = currentPath.startsWith('/now');
 ---
 
 <!doctype html>
-<html class="scroll-smooth" lang="en-GB">
+<html class="scroll-smooth" lang="en-GB" data-mode="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
@@ -49,40 +52,72 @@ const currentPath = Astro.url.pathname;
     <title>{title}</title>
     
     <script is:inline>
-      const systemPref = window.matchMedia("(prefers-color-scheme: light)");
-
-      function getStoredMode() {
-        const stored = typeof localStorage !== "undefined" && localStorage.getItem("color-mode");
-        return stored || (systemPref.matches ? "light" : "dark");
-      }
-
-      function applyMode(mode) {
-        if (mode !== "light" && mode !== "dark") {
-          return console.warn(`Invalid mode: ${mode}`);
-        }
-
+      (function () {
         const root = document.documentElement;
+        const fallbackMode = "dark";
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-        if (mode === root.getAttribute("data-mode")) {
-          return;
+        function readStoredMode() {
+          try {
+            const stored = localStorage.getItem("color-mode");
+            if (stored === "light" || stored === "dark") {
+              return stored;
+            }
+          } catch (error) {
+            console.warn("color-mode preference unavailable", error);
+          }
+          return null;
         }
 
-        root.setAttribute("data-mode", mode);
-
-        if (typeof localStorage !== "undefined") {
-          localStorage.setItem("color-mode", mode);
+        function writeStoredMode(mode) {
+          try {
+            localStorage.setItem("color-mode", mode);
+          } catch (error) {
+            console.warn("Unable to persist color-mode", error);
+          }
         }
-      }
 
-      applyMode(getStoredMode());
+        function resolveMode() {
+          const stored = readStoredMode();
+          if (stored) {
+            return stored;
+          }
 
-      document.addEventListener("astro:after-swap", () => applyMode(getStoredMode()));
+          if (root.dataset.mode) {
+            return root.dataset.mode;
+          }
 
-      document.addEventListener("mode-toggle", (e) => {
-        applyMode(e.detail.mode);
-      });
+          return systemPrefersDark.matches ? "dark" : fallbackMode;
+        }
 
-      systemPref.addEventListener("change", (e) => applyMode(e.matches ? "light" : "dark"));
+        function applyMode(mode) {
+          if (mode !== "light" && mode !== "dark") {
+            console.warn(`Invalid mode: ${mode}`);
+            return;
+          }
+
+          if (mode === root.getAttribute("data-mode")) {
+            return;
+          }
+
+          root.setAttribute("data-mode", mode);
+          writeStoredMode(mode);
+        }
+
+        applyMode(resolveMode());
+
+        document.addEventListener("astro:after-swap", () => applyMode(resolveMode()));
+
+        document.addEventListener("mode-toggle", (event) => {
+          applyMode(event.detail.mode);
+        });
+
+        systemPrefersDark.addEventListener("change", (event) => {
+          if (!readStoredMode()) {
+            applyMode(event.matches ? "dark" : "light");
+          }
+        });
+      })();
     </script>
   </head>
   <body class="bg-bg-base text-text-primary mx-auto flex min-h-screen max-w-3xl flex-col px-4 pt-16 font-mono text-sm font-normal antialiased sm:px-8">
@@ -91,14 +126,35 @@ const currentPath = Astro.url.pathname;
         <a href="/" class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": currentPath === "/" }]}>
           home
         </a>
-        {navPages.map(page => (
-          <a 
-            href={`/${page.slug}`} 
-            class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": currentPath === `/${page.slug}` || currentPath === `/${page.slug}/` }]}
-          >
-            {page.data.navLabel || page.slug}
-          </a>
-        ))}
+        {navPages.map(page => {
+          // Insert /now link after navOrder 1 (about) and before navOrder 3 (projects)
+          if (page.data.navOrder === 3) {
+            return (
+              <>
+                <a 
+                  href="/now" 
+                  class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": isNowPage }]}
+                >
+                  now
+                </a>
+                <a 
+                  href={`/${page.slug}`} 
+                  class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": currentPath === `/${page.slug}` || currentPath === `/${page.slug}/` }]}
+                >
+                  {page.data.navLabel || page.slug}
+                </a>
+              </>
+            );
+          }
+          return (
+            <a 
+              href={`/${page.slug}`} 
+              class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": currentPath === `/${page.slug}` || currentPath === `/${page.slug}/` }]}
+            >
+              {page.data.navLabel || page.slug}
+            </a>
+          );
+        })}
         <button id="contact-button" class="nav-link transition-colors hover:text-[var(--color-brand)]" type="button">
           contact
         </button>
