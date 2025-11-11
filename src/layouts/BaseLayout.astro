@@ -330,7 +330,7 @@ const isNowPage = currentPath.startsWith('/now');
               const hasClickedBefore = localStorage.getItem("theme-switch-clicked");
               
               if (!hasClickedBefore) {
-                // First click - show "srsly?" and don't switch theme
+                // First click - show message and don't switch theme
                 speechBubbleText.textContent = "srsly?";
                 speechBubble.classList.remove("hidden");
                 
@@ -351,8 +351,8 @@ const isNowPage = currentPath.startsWith('/now');
                 
                 return; // Don't toggle the theme
               } else if (hasClickedBefore === "first") {
-                // Second click - show "your funeral" and switch theme
-                speechBubbleText.textContent = "your funeral i guess..";
+                // Second click - show second message and switch theme
+                speechBubbleText.textContent = "fine it's your funeral..";
                 speechBubble.classList.remove("hidden");
                 
                 // Trigger reflow to ensure transition works
