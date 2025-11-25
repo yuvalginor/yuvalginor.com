@@ -130,6 +130,13 @@
       // Backdrop click
       this.backdrop?.addEventListener('click', () => this.close());
       
+      // close if clicking outside the content
+      this.modal?.addEventListener('click', (e) => {
+        if (e.target === this.modal) {
+          this.close();
+        }
+      });
+      
       // ESC key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && this.isOpen) {
