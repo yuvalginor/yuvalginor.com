@@ -410,6 +410,7 @@ contact-modal.is-open .contact-modal {
 
 .form-actions {
 	display: flex;
+	justify-content: flex-end;
 	gap: 0.75rem;
 	margin-top: 0.5rem;
 }
@@ -426,15 +427,15 @@ contact-modal.is-open .contact-modal {
 }
 
 .btn-send {
-	background-color: var(--color-brand);
+	background-color: color-mix(in srgb, var(--color-brand) 90%, black);
 	color: white;
-	border-color: var(--color-brand);
+	border-color: color-mix(in srgb, var(--color-brand) 90%, black);
 	position: relative;
 }
 
 .btn-send:hover:not(.is-loading) {
-	background-color: var(--color-link-hover);
-	border-color: var(--color-link-hover);
+	background-color: color-mix(in srgb, var(--color-link-hover) 90%, black);
+	border-color: color-mix(in srgb, var(--color-link-hover) 90%, black);
 }
 
 .btn-send:focus {
