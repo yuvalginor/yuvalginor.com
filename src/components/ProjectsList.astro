@@ -3,62 +3,180 @@ import { getCollection } from 'astro:content';
 
 // Fetch and sort projects
 const allProjects = await getCollection('projects');
-const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+const projects = allProjects.sort((a: typeof allProjects[0], b: typeof allProjects[0]) => a.data.order - b.data.order);
+
+// Split projects into two columns: even indices (0,2,4...) go left, odd indices (1,3,5...) go right
+const leftColumn = projects.filter((_: typeof projects[0], index: number) => index % 2 === 0);
+const rightColumn = projects.filter((_: typeof projects[0], index: number) => index % 2 === 1);
 ---
 
 <div class="projects-list">
-  {projects.map(async (project, index) => {
-    const { Content } = await project.render();
-    const hasMoreInfo = project.body.includes('## More info');
-    
-    return (
-      <div
-        class="project-item"
-        id={project.slug}
-        data-project-id={index}
-        data-project-slug={project.slug}
-        data-years={project.data.years}
-      >
-        <div class="project-header-inline">
-          <span class="project-emoji">{project.data.emoji}</span>
-          <h3 class="project-title-inline">{project.data.title}</h3>
+  <div class="projects-column projects-column-left">
+    {leftColumn.map(async (project: typeof projects[0], columnIndex: number) => {
+      const { Content } = await project.render();
+      const hasMoreInfo = project.body.includes('## More info');
+      // Original index in sorted array (even indices: 0, 2, 4...)
+      const originalIndex = columnIndex * 2;
+      
+      return (
+        <div
+          class="project-item"
+          id={project.slug}
+          data-project-id={originalIndex}
+          data-project-slug={project.slug}
+          data-years={project.data.years}
+          data-original-column="0"
+        >
+          <div class="project-header-inline">
+            <span class="project-emoji">{project.data.emoji}</span>
+            <h3 class="project-title-inline">{project.data.title}</h3>
+          </div>
+          
+          <p class="project-context" set:html={project.data.context} />
+          
+          <div class="project-summary" data-clickable={hasMoreInfo ? "true" : "false"}>
+            <Content />
+          </div>
+          
+          <div class="project-actions">
+            {hasMoreInfo && (
+              <button 
+                class="project-toggle" 
+                type="button"
+                aria-expanded="false"
+                aria-controls={`project-details-${originalIndex}`}
+              >
+                <span class="toggle-text-more">More info ↓</span>
+                <span class="toggle-text-less">Less info ↑</span>
+              </button>
+            )}
+            {project.data.link && (
+              <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Visit project website">
+                <svg class="project-link-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span class="project-link-text">Check it out</span>
+              </a>
+            )}
+          </div>
         </div>
-        
-        <p class="project-context" set:html={project.data.context} />
-        
-        <div class="project-summary" data-clickable={hasMoreInfo ? "true" : "false"}>
-          <Content />
+      );
+    })}
+  </div>
+  
+  <div class="projects-column projects-column-right">
+    {rightColumn.map(async (project: typeof projects[0], columnIndex: number) => {
+      const { Content } = await project.render();
+      const hasMoreInfo = project.body.includes('## More info');
+      // Original index in sorted array (odd indices: 1, 3, 5...)
+      const originalIndex = columnIndex * 2 + 1;
+      
+      return (
+        <div
+          class="project-item"
+          id={project.slug}
+          data-project-id={originalIndex}
+          data-project-slug={project.slug}
+          data-years={project.data.years}
+          data-original-column="1"
+        >
+          <div class="project-header-inline">
+            <span class="project-emoji">{project.data.emoji}</span>
+            <h3 class="project-title-inline">{project.data.title}</h3>
+          </div>
+          
+          <p class="project-context" set:html={project.data.context} />
+          
+          <div class="project-summary" data-clickable={hasMoreInfo ? "true" : "false"}>
+            <Content />
+          </div>
+          
+          <div class="project-actions">
+            {hasMoreInfo && (
+              <button 
+                class="project-toggle" 
+                type="button"
+                aria-expanded="false"
+                aria-controls={`project-details-${originalIndex}`}
+              >
+                <span class="toggle-text-more">More info ↓</span>
+                <span class="toggle-text-less">Less info ↑</span>
+              </button>
+            )}
+            {project.data.link && (
+              <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Visit project website">
+                <svg class="project-link-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span class="project-link-text">Check it out</span>
+              </a>
+            )}
+          </div>
         </div>
-        
-        <div class="project-actions">
-          {hasMoreInfo && (
-            <button 
-              class="project-toggle" 
-              type="button"
-              aria-expanded="false"
-              aria-controls={`project-details-${index}`}
-            >
-              <span class="toggle-text-more">More info ↓</span>
-              <span class="toggle-text-less">Less info ↑</span>
-            </button>
-          )}
-          {project.data.link && (
-            <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Visit project website">
-              <svg class="project-link-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
-              <span class="project-link-text">Check it out</span>
-            </a>
-          )}
-        </div>
-      </div>
-    );
-  })}
+      );
+    })}
+  </div>
 </div>
 
 <script>
+  function interleaveColumnsForNarrowScreens() {
+    const projectsList = document.querySelector('.projects-list');
+    if (!projectsList) return;
+    
+    const leftColumn = projectsList.querySelector('.projects-column-left');
+    const rightColumn = projectsList.querySelector('.projects-column-right');
+    if (!leftColumn || !rightColumn) return;
+    
+    const isNarrow = window.innerWidth < 768;
+    const allItems = Array.from(projectsList.querySelectorAll('.project-item')) as HTMLElement[];
+    
+    if (isNarrow) {
+      // Interleave items on narrow screens
+      const leftItems = Array.from(leftColumn.querySelectorAll('.project-item') as NodeListOf<HTMLElement>).sort(
+        (a: HTMLElement, b: HTMLElement) => parseInt(a.getAttribute('data-project-id') || '0') - parseInt(b.getAttribute('data-project-id') || '0')
+      );
+      const rightItems = Array.from(rightColumn.querySelectorAll('.project-item') as NodeListOf<HTMLElement>).sort(
+        (a: HTMLElement, b: HTMLElement) => parseInt(a.getAttribute('data-project-id') || '0') - parseInt(b.getAttribute('data-project-id') || '0')
+      );
+      
+      // Clear columns
+      leftColumn.innerHTML = '';
+      rightColumn.innerHTML = '';
+      
+      // Interleave: left[0], right[0], left[1], right[1], etc.
+      const maxLength = Math.max(leftItems.length, rightItems.length);
+      for (let i = 0; i < maxLength; i++) {
+        if (leftItems[i]) {
+          leftColumn.appendChild(leftItems[i]);
+        }
+        if (rightItems[i]) {
+          leftColumn.appendChild(rightItems[i]);
+        }
+      }
+    } else {
+      // Restore original structure on larger screens
+      const sortedItems = allItems.sort(
+        (a: HTMLElement, b: HTMLElement) => parseInt(a.getAttribute('data-project-id') || '0') - parseInt(b.getAttribute('data-project-id') || '0')
+      );
+      
+      leftColumn.innerHTML = '';
+      rightColumn.innerHTML = '';
+      
+      sortedItems.forEach((item: HTMLElement) => {
+        const originalColumn = item.getAttribute('data-original-column');
+        if (originalColumn === '0') {
+          leftColumn.appendChild(item);
+        } else {
+          rightColumn.appendChild(item);
+        }
+      });
+    }
+  }
+  
   function initializeProjects() {
     const projects = document.querySelectorAll('.project-item');
     
@@ -78,25 +196,28 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       
       // Find the "More info" heading and everything after it
       const headings = summary.querySelectorAll('h2');
-      let moreInfoHeading = null;
+      let moreInfoHeading: HTMLElement | null = null;
       
-      headings.forEach(h => {
+      headings.forEach((h: Element) => {
         if (h.textContent?.trim() === 'More info') {
-          moreInfoHeading = h;
+          moreInfoHeading = h as HTMLElement;
         }
       });
       
       if (!moreInfoHeading) return;
       
+      // TypeScript type narrowing - use non-null assertion after check
+      const heading: HTMLElement = moreInfoHeading;
+      
       // Find the last paragraph before "More info" heading (the summary)
-      let lastSummaryParagraph = moreInfoHeading.previousElementSibling;
+      let lastSummaryParagraph = heading.previousElementSibling as HTMLElement | null;
       while (lastSummaryParagraph && lastSummaryParagraph.tagName !== 'P') {
-        lastSummaryParagraph = lastSummaryParagraph.previousElementSibling;
+        lastSummaryParagraph = lastSummaryParagraph.previousElementSibling as HTMLElement | null;
       }
       
       // Collect all elements after "More info" heading
       const detailsElements: Element[] = [];
-      let currentElement = moreInfoHeading.nextElementSibling;
+      let currentElement: Element | null = heading.nextElementSibling;
       
       while (currentElement) {
         detailsElements.push(currentElement);
@@ -104,7 +225,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       }
       
       // Hide the "More info" heading initially
-      moreInfoHeading.style.display = 'none';
+      heading.style.display = 'none';
       
       // Get context element and years
       const contextElement = projectElement.querySelector('.project-context');
@@ -178,18 +299,33 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
 
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    const toggle = target.querySelector('.project-toggle');
+    const toggle = target.querySelector('.project-toggle') as HTMLButtonElement | null;
     if (toggle && toggle.getAttribute('aria-expanded') !== 'true') {
       toggle.click();
     }
   }
 
   // Initialize on page load
+  interleaveColumnsForNarrowScreens();
   initializeProjects();
   focusProjectFromHash();
   
+  // Handle window resize
+  let resizeTimeout: number;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = window.setTimeout(() => {
+      interleaveColumnsForNarrowScreens();
+      // Re-initialize projects after DOM changes
+      setTimeout(() => {
+        initializeProjects();
+      }, 0);
+    }, 150);
+  });
+  
   // Re-initialize after view transitions
   document.addEventListener('astro:page-load', () => {
+    interleaveColumnsForNarrowScreens();
     initializeProjects();
     focusProjectFromHash();
   });
