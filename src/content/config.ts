@@ -22,6 +22,7 @@ const projects = defineCollection({
     context: z.string(),
     order: z.number(),
     years: z.string().optional(),
+    link: z.string().url().optional(),
   }),
 });
 

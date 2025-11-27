@@ -26,21 +26,33 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
         
         <p class="project-context" set:html={project.data.context} />
         
-        <div class="project-summary">
+        <div class="project-summary" data-clickable={hasMoreInfo ? "true" : "false"}>
           <Content />
         </div>
         
-        {hasMoreInfo && (
-          <button 
-            class="project-toggle" 
-            type="button"
-            aria-expanded="false"
-            aria-controls={`project-details-${index}`}
-          >
-            <span class="toggle-text-more">More info ↓</span>
-            <span class="toggle-text-less">Less info ↑</span>
-          </button>
-        )}
+        <div class="project-actions">
+          {hasMoreInfo && (
+            <button 
+              class="project-toggle" 
+              type="button"
+              aria-expanded="false"
+              aria-controls={`project-details-${index}`}
+            >
+              <span class="toggle-text-more">More info ↓</span>
+              <span class="toggle-text-less">Less info ↑</span>
+            </button>
+          )}
+          {project.data.link && (
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Visit project website">
+              <svg class="project-link-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span class="project-link-text">Check it out</span>
+            </a>
+          )}
+        </div>
       </div>
     );
   })}
@@ -61,7 +73,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       const toggle = projectElement.querySelector('.project-toggle');
       if (!toggle) return;
       
-      const summary = projectElement.querySelector('.project-summary');
+      const summary = projectElement.querySelector('.project-summary') as HTMLElement;
       if (!summary) return;
       
       // Find the "More info" heading and everything after it
@@ -94,11 +106,6 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       // Hide the "More info" heading initially
       moreInfoHeading.style.display = 'none';
       
-      // Move toggle button to be after the summary paragraph, before details
-      if (lastSummaryParagraph && toggle.parentNode) {
-        lastSummaryParagraph.insertAdjacentElement('afterend', toggle);
-      }
-      
       // Get context element and years
       const contextElement = projectElement.querySelector('.project-context');
       const years = projectElement.getAttribute('data-years');
@@ -118,8 +125,8 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
         (el as HTMLElement).style.display = 'none';
       });
       
-      // Toggle functionality
-      toggle.addEventListener('click', () => {
+      // Toggle function
+      const toggleExpanded = () => {
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
         
         toggle.setAttribute('aria-expanded', String(!isExpanded));
@@ -142,6 +149,22 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
             (el as HTMLElement).style.display = 'none';
           });
         }
+      };
+      
+      // Toggle functionality on button
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleExpanded();
+      });
+      
+      // Toggle functionality on summary content (but not on links or buttons)
+      summary.addEventListener('click', (e) => {
+        // Don't toggle if clicking on a link, button, or other interactive element
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
+          return;
+        }
+        toggleExpanded();
       });
     });
   }
