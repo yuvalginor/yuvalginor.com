@@ -170,6 +170,15 @@
 	line-height: 1.6;
 }
 
+.project-summary[data-clickable="true"] {
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.project-summary[data-clickable="true"]:hover {
+	opacity: 0.85;
+}
+
 .project-summary > :first-child {
 	margin-top: 0;
 }
