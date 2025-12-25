@@ -1,0 +1,16 @@
+---
+---
+<a href="/contact" class="email-trigger" onclick="return false;"><slot>email</slot></a><script>
+  function setupEmailTriggers() {
+    document.querySelectorAll('.email-trigger').forEach(btn => {
+      if (btn.hasAttribute('data-init')) return;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('open-contact-modal'));
+      });
+      btn.setAttribute('data-init', 'true');
+    });
+  }
+  setupEmailTriggers();
+  document.addEventListener('astro:page-load', setupEmailTriggers);
+</script>
