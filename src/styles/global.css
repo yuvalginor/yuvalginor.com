@@ -90,6 +90,14 @@
 	}
 }
 
+/* Hide the /now nav + homepage links once the now page has gone stale.
+   The [data-now-stale] flag is set before paint by an inline script in
+   BaseLayout, so these never flash into view. */
+[data-now-stale="true"] .now-nav-link,
+[data-now-stale="true"] .now-inline-link {
+	display: none !important;
+}
+
 @utility prose {
 	--tw-prose-body: var(--color-text-primary);
 	--tw-prose-bold: var(--color-text-primary);

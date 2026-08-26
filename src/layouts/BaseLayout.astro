@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ContactModal from '../components/ContactModal.astro';
+import { getLatestNowDate, toIsoDate, NOW_STALE_DAYS } from '../utils/nowStatus';
 import '../styles/global.css';
 
 interface Props {
@@ -32,6 +33,12 @@ const currentPath = Astro.url.pathname;
 
 // Check if we're on the /now page or any subpage
 const isNowPage = currentPath.startsWith('/now');
+
+// Latest /now entry date (YYYY-MM-DD). The client script below and the
+// Netlify edge function use this to hide/404 the /now page once it goes stale.
+const latestNow = await getLatestNowDate();
+const latestNowDate = latestNow ? toIsoDate(latestNow) : null;
+const nowStaleMs = NOW_STALE_DAYS * 24 * 60 * 60 * 1000;
 ---
 
 <!doctype html>
@@ -49,8 +56,16 @@ const isNowPage = currentPath.startsWith('/now');
     <link rel="manifest" href="/site.webmanifest" />
     
     <meta name="generator" content={Astro.generator} />
+    {latestNowDate && <meta name="now-updated" content={latestNowDate} />}
     <title>{title}</title>
-    
+
+    {latestNowDate && (
+      <script
+        is:inline
+        set:html={`(function(){try{var u=new Date(${JSON.stringify(latestNowDate)}).getTime();if(!isNaN(u)&&Date.now()-u>${nowStaleMs}){document.documentElement.setAttribute('data-now-stale','true');}}catch(e){}})();`}
+      />
+    )}
+
     <script is:inline>
       (function () {
         const root = document.documentElement;
@@ -131,9 +146,9 @@ const isNowPage = currentPath.startsWith('/now');
           if (page.data.navOrder === 3) {
             return (
               <>
-                <a 
-                  href="/now" 
-                  class:list={["nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": isNowPage }]}
+                <a
+                  href="/now"
+                  class:list={["nav-link", "now-nav-link", "transition-colors", "hover:text-[var(--color-brand)]", { "current-page": isNowPage }]}
                 >
                   now
                 </a>
