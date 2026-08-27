@@ -6,9 +6,10 @@ const STALE_MS = 30 * 24 * 60 * 60 * 1000;
 // Reads the <meta name="now-updated" content="YYYY-MM-DD"> that BaseLayout
 // renders into every page, compares it to the real request-time clock, and
 // once the /now page has been stale for too long, quietly serves the homepage
-// instead (via a rewrite that keeps the URL) — matching the site-wide catch-all
-// that reroutes any unknown path to home. Runs per-request, no rebuild required.
-export default async function handler(_request: Request, context: Context) {
+// content instead (keeping the /now URL, HTTP 200) — matching the site-wide
+// catch-all that reroutes any unknown path to home. Runs per-request, no
+// rebuild required.
+export default async function handler(request: Request, context: Context) {
   const response = await context.next();
 
   const contentType = response.headers.get("content-type") ?? "";
@@ -22,7 +23,13 @@ export default async function handler(_request: Request, context: Context) {
   if (match) {
     const updated = new Date(match[1]).getTime();
     if (!Number.isNaN(updated) && Date.now() - updated > STALE_MS) {
-      return context.rewrite("/");
+      // Stale: serve the homepage in place, preserving the /now URL (200),
+      // just like the catch-all does for any other unknown path.
+      const home = await fetch(new URL("/", request.url));
+      return new Response(await home.text(), {
+        status: 200,
+        headers: { "content-type": "text/html; charset=utf-8" },
+      });
     }
   }
 
