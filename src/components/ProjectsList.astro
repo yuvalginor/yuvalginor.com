@@ -30,6 +30,7 @@ const rightColumn = projects.filter((_: typeof projects[0], index: number) => in
           <div class="project-header-inline">
             <span class="project-emoji">{project.data.emoji}</span>
             <h3 class="project-title-inline">{project.data.title}</h3>
+            {project.data.status === 'shelved' && <span class="project-status">Shelved</span>}
           </div>
           
           <p class="project-context" set:html={project.data.context} />
@@ -85,6 +86,7 @@ const rightColumn = projects.filter((_: typeof projects[0], index: number) => in
           <div class="project-header-inline">
             <span class="project-emoji">{project.data.emoji}</span>
             <h3 class="project-title-inline">{project.data.title}</h3>
+            {project.data.status === 'shelved' && <span class="project-status">Shelved</span>}
           </div>
           
           <p class="project-context" set:html={project.data.context} />

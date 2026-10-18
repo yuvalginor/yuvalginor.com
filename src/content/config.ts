@@ -23,6 +23,7 @@ const projects = defineCollection({
     order: z.number(),
     years: z.string().optional(),
     link: z.string().url().optional(),
+    status: z.enum(['active', 'shelved']).optional(), // Shows a small badge next to the title
   }),
 });
 
