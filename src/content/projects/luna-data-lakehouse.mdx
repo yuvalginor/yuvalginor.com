@@ -1,0 +1,18 @@
+---
+emoji: "🗄️"
+title: "Multi-Sensor Data Lakehouse"
+context: "At Luna Systems"
+order: 1
+years: "2026"
+---
+Designed the data lakehouse for camera, LiDAR and telemetry recordings from motorcycles and bikes, built so model performance can be evaluated by scenario.
+
+## More info
+
+Identified gaps in how recorded data was stored, organized and used. Designed the architecture, schema and ingestion ahead of a large data collection campaign, built with the data team on S3 and Iceberg.
+
+Every clip is tagged with its conditions, like location, lighting and weather, and with the ground truth it carries. Any slice of data is one query, and any training or eval set is reproducible.
+
+Ground truth and calibration are versioned alongside immutable clips, so results stay comparable as data and labels change.
+
+**Model performance can be broken down by scenario**, showing where it fails and where to collect next.
