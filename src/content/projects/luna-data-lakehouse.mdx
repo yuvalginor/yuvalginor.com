@@ -1,14 +1,18 @@
 ---
 emoji: "🗄️"
-title: "Rider Data Lakehouse"
+title: "Multi-Sensor Data Lakehouse"
 context: "At Luna Systems"
 order: 1
-years: "2025-2026"
+years: "2026"
 ---
-
-Data lakehouse for rider assistance R&D, giving the team a single organized, queryable home for its video and sensor data from motorcycles and bikes.
+Designed the data lakehouse for camera, LiDAR and telemetry recordings from motorcycles and bikes, built so model performance can be evaluated by scenario.
 
 ## More info
 
-Designed the architecture with scenario tagging built in - weather, lighting and more - so every recording carries the conditions it was captured in.
-Plugged into evaluation, **model performance could be broken down by condition**, showing where it holds up and where it falls short.
+Identified gaps in how recorded data was stored, organized and used. Designed the architecture, schema and ingestion ahead of a large data collection campaign, built with the data team on S3 and Iceberg.
+
+Every clip is tagged with its conditions, like location, lighting and weather, and with the ground truth it carries. Any slice of data is one query, and any training or eval set is reproducible.
+
+Ground truth and calibration are versioned alongside immutable clips, so results stay comparable as data and labels change.
+
+**Model performance can be broken down by scenario**, showing where it fails and where to collect next.
